@@ -34,6 +34,7 @@ const SYSCALL_WRITE: u64 = 1;
 const SYSCALL_IOCTL: u64 = 16;
 const SYSCALL_EXIT: u64 = 60;
 const SYSCALL_FCNTL: u64 = 72;
+const SYSCALL_CLOCK_GETTIME: u64 = 228;
 
 const KEY_UP: u8 = 65;
 const KEY_DOWN: u8 = 66;
@@ -314,11 +315,11 @@ fn get_time() -> (usize, usize) {
         #[cfg(target_arch = "x86_64")]
         {
             asm!(
-                "mov rax, 228",
                 "mov rdi, 0",
                 "syscall",
+                in("rax") SYSCALL_CLOCK_GETTIME,
                 in("rsi") timespec.as_mut_ptr(),
-                out("rax") _,
+                lateout("rax") _,
                 out("rdi") _,
             );
         }
